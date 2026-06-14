@@ -268,34 +268,36 @@
     z-index: 1;
   }
 
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 8rem 2.5rem 4rem;
-    max-width: 920px;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-  }
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 2.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  /* remove max-width and margin: 0 auto from here */
+}
 
-  .hero-video-bg {
+#hero-content {
+  max-width: 920px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.hero-video-bg video {
     position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  .hero-video-bg video {
-    width: 100%;
-    height: 100%;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    min-width: 100%;
+    min-height: 100%;
     object-fit: cover;
+    transform: translate(-50%, -50%);
     filter: brightness(0.65) saturate(1.1);
   }
-
   .hero-video-overlay {
     position: absolute;
     inset: 0;
@@ -1477,7 +1479,7 @@
       <div class="project-body">
         <div class="project-badge">Coming soon</div>
         <div class="project-name">Next project</div>
-        <div class="project-desc">Currently learning and building. Something new is on the way — stay tuned.</div>
+        <div class="project-desc">Currently learning and building. Something new is on the way stay tuned.</div>
         <div class="project-tags">
           <span class="tag">JavaScript</span>
           <span class="tag">TBD</span>
