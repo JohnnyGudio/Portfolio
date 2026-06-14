@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>John's Porfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script>
+  /* Set theme before first paint to avoid a flash of the wrong theme */
+  (function () {
+    try {
+      var saved = localStorage.getItem('portfolio-theme');
+      if (!saved) {
+        saved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', saved);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080910;
+    --surface: #10121a;
+    --surface2: #181b25;
+    --border: rgba(255,255,255,0.07);
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --accent3: #38bdf8;
+    --text: #e8e9ed;
+    --muted: #6b7080;
+    --heading: #ffffff;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  /* ─── LIGHT THEME ─── */
+  [data-theme="light"] {
+    --bg: #f4f4f9;
+    --surface: #ffffff;
+    --surface2: #edeef5;
+    --border: rgba(20,20,40,0.08);
+    --accent: #6c63ff;
+    --accent2: #7c3aed;
+    --accent3: #0284c7;
+    --text: #33353f;
+    --muted: #6b7080;
+    --heading: #14151f;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  /* ─── AMBIENT GLOW ─── */
+  .glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.12;
+    transition: background-color 0.5s ease, opacity 0.5s ease;
+  }
+  .glow-orb-1 {
+    width: 600px; height: 600px;
+    background: var(--accent);
+    top: -200px; left: -150px;
+    animation: drift1 18s ease-in-out infinite alternate;
+  }
+  .glow-orb-2 {
+    width: 400px; height: 400px;
+    background: var(--accent3);
+    bottom: 10%; right: -100px;
+    animation: drift2 22s ease-in-out infinite alternate;
+  }
+  [data-theme="light"] .glow-orb { opacity: 0.16; }
+  @keyframes drift1 { to { transform: translate(80px, 120px); } }
+  @keyframes drift2 { to { transform: translate(-60px, -80px); } }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 2.5rem;
+    background: rgba(8,9,16,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: padding 0.3s, background-color 0.5s ease, border-color 0.5s ease;
+  }
+  [data-theme="light"] nav { background: rgba(244,244,249,0.7); }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    color: var(--accent2);
+    letter-spacing: 0.05em;
+    transition: color 0.4s ease;
+  }
+  .nav-logo span { color: var(--accent3); transition: color 0.4s ease; }
+
+  .nav-right { display: flex; align-items: center; gap: 2rem; }
+
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent2);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* ─── THEME TOGGLE ─── */
+  .theme-toggle {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.25s, background-color 0.4s ease, color 0.4s ease, transform 0.15s;
+  }
+  .theme-toggle:hover { border-color: var(--accent2); transform: translateY(-2px); }
+  .theme-toggle:active { transform: translateY(-2px) scale(0.9); }
+  .theme-icon {
+    position: absolute;
+    inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .theme-icon svg { width: 17px; height: 17px; }
+  .sun-icon { opacity: 0; transform: rotate(-90deg) scale(0.4); color: #f5b942; }
+  .moon-icon { opacity: 1; transform: rotate(0deg) scale(1); color: var(--accent3); }
+  [data-theme="light"] .sun-icon { opacity: 1; transform: rotate(0deg) scale(1); }
+  [data-theme="light"] .moon-icon { opacity: 0; transform: rotate(90deg) scale(0.4); }
+
+  /* ─── THEME WAVE TRANSITION ─── */
+  .theme-wave {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    inset: 0;
+    overflow: hidden;
+  }
+  .theme-wave canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* toggle spin animation */
+  .theme-toggle.spinning {
+    animation: toggleSpin 0.55s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes toggleSpin {
+    0%   { transform: rotate(0deg) scale(1); }
+    40%  { transform: rotate(200deg) scale(0.8); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  /* ─── LAYOUT ─── */
+  section {
+    padding: 7rem 2.5rem;
+    max-width: 920px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 2.5rem 4rem;
+    max-width: 920px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.1s forwards;
+    transition: color 0.4s ease;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 28px; height: 1px;
+    background: var(--accent3);
+    transition: background-color 0.4s ease;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    display: inline-block;
+    box-shadow: 0 0 8px #22c55e;
+    animation: pulse-dot 2s ease infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px #22c55e; }
+    50% { opacity: 0.6; box-shadow: 0 0 14px #22c55e; }
+  }
+
+  .hero-name {
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--heading);
+    margin-bottom: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.25s forwards;
+    transition: color 0.4s ease;
+  }
+  .hero-name .highlight {
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-title {
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.4s forwards;
+  }
+  .hero-title .typed-accent { color: var(--accent2); font-weight: 500; transition: color 0.4s ease; }
+
+  .hero-desc {
+    max-width: 500px;
+    color: var(--muted);
+    font-size: 0.975rem;
+    margin-bottom: 2.75rem;
+    line-height: 1.85;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.55s forwards;
+  }
+
+  .hero-cta {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.7s forwards;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 0.8rem 1.9rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: background 0.25s, transform 0.15s, box-shadow 0.25s;
+    display: inline-block;
+    box-shadow: 0 0 0 rgba(108,99,255,0);
+  }
+  .btn-primary:hover {
+    background: #7c74ff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(108,99,255,0.4);
+  }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.8rem 1.9rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, transform 0.15s, background 0.2s, color 0.4s ease;
+    display: inline-block;
+    background: rgba(255,255,255,0.02);
+  }
+  .btn-outline:hover {
+    border-color: var(--accent2);
+    background: rgba(167,139,250,0.06);
+    transform: translateY(-2px);
+  }
+
+  /* CURSOR BLINK */
+  .blink { animation: blink 1s step-end infinite; color: var(--accent3); transition: color 0.4s ease; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 1.3s forwards;
+    pointer-events: none;
+    user-select: none;
+  }
+  .scroll-mouse {
+    width: 20px;
+    height: 32px;
+    border: 1.5px solid var(--muted);
+    border-radius: 10px;
+    position: relative;
+    opacity: 0.55;
+  }
+  .scroll-mouse::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+    background: var(--accent3);
+    border-radius: 2px;
+    animation: scrollWheel 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollWheel {
+    0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    60%  { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    61%  { opacity: 0; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    transition: color 0.4s ease;
+  }
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 20px; height: 1px;
+    background: var(--accent3);
+    transition: background-color 0.4s ease;
+  }
+  .section-title {
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color: var(--heading);
+    letter-spacing: -0.03em;
+    margin-bottom: 3rem;
+    transition: color 0.4s ease;
+    display: inline-block;
+    position: relative;
+  }
+
+  /* ─── ABOUT ─── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+  .about-text p { color: var(--muted); margin-bottom: 1.1rem; line-height: 1.9; }
+  .about-text p strong { color: var(--text); font-weight: 600; transition: color 0.4s ease; }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: border-color 0.25s, transform 0.2s, background-color 0.4s ease;
+    cursor: default;
+  }
+  .stat-box:hover {
+    border-color: rgba(167,139,250,0.3);
+    transform: translateY(-2px);
+  }
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); }
+
+  /* ─── SKILLS ─── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 0.9rem;
+  }
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    transition: border-color 0.25s, transform 0.2s, background-color 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(108,99,255,0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .skill-card:hover {
+    border-color: rgba(108,99,255,0.4);
+    transform: translateY(-3px);
+  }
+  .skill-card:hover::after { opacity: 1; }
+
+  .skill-icon {
+    width: 26px; height: 26px;
+    margin-bottom: 0.75rem;
+    color: var(--accent2);
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+  .skill-icon svg { display: block; width: 100%; height: 100%; }
+  .skill-card:hover .skill-icon { color: var(--accent3); transform: scale(1.12) rotate(-4deg); }
+
+  .skill-name { font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 0.45rem; transition: color 0.4s ease; }
+
+  .skill-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.7rem;
+    gap: 0.5rem;
+  }
+  .skill-level { font-size: 0.72rem; color: var(--muted); font-family: var(--mono); }
+  .skill-percent {
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    font-weight: 700;
+    color: var(--accent2);
+    transition: color 0.4s ease;
+    flex-shrink: 0;
+  }
+
+  .skill-bar {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  [data-theme="light"] .skill-bar { background: rgba(0,0,0,0.06); }
+  .skill-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skill-fill.animated { transform: scaleX(1); }
+
+  /* ─── PROJECTS ─── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+    gap: 1.1rem;
+  }
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 0;
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s, background-color 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .project-card:hover {
+    border-color: rgba(108,99,255,0.35);
+    transform: translateY(-6px) scale(1.012);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4), 0 0 0 1px rgba(108,99,255,0.1);
+  }
+  [data-theme="light"] .project-card:hover {
+    box-shadow: 0 20px 50px rgba(108,99,255,0.18), 0 0 0 1px rgba(108,99,255,0.12);
+  }
+
+  /* Thumbnail area */
+  .project-thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--surface2);
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .project-thumb img,
+  .project-thumb video {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease, filter 0.5s ease;
+  }
+  .project-card:hover .project-thumb img,
+  .project-card:hover .project-thumb video {
+    transform: scale(1.06);
+    filter: brightness(1.05);
+  }
+
+  /* Placeholder thumb for cards without images */
+  .project-thumb-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, var(--surface2) 0%, #0d0f1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.4s ease;
+  }
+  [data-theme="light"] .project-thumb-placeholder {
+    background: linear-gradient(135deg, var(--surface2) 0%, #e3e5f0 100%);
+  }
+  .project-thumb-placeholder::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 40%, rgba(108,99,255,0.15), transparent 60%);
+  }
+  .project-thumb-placeholder .placeholder-icon {
+    width: 42px; height: 42px;
+    color: var(--accent2);
+    opacity: 0.85;
+    position: relative;
+    z-index: 1;
+    transition: color 0.4s ease, transform 0.4s ease;
+  }
+  .project-thumb-placeholder .placeholder-icon svg { display: block; width: 100%; height: 100%; }
+  .project-card:hover .project-thumb-placeholder .placeholder-icon {
+    transform: scale(1.08);
+    color: var(--accent3);
+  }
+
+  /* Animated shimmer line on top of card */
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--accent), var(--accent2), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+    z-index: 2;
+  }
+  .project-card:hover::before { transform: scaleX(1); }
+
+  .project-body { padding: 1.4rem; flex: 1; display: flex; flex-direction: column; }
+  .project-badge {
+    display: inline-block;
+    background: rgba(108,99,255,0.12);
+    color: var(--accent2);
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    padding: 0.18rem 0.55rem;
+    border-radius: 4px;
+    margin-bottom: 0.7rem;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(108,99,255,0.2);
+    transition: color 0.4s ease;
+  }
+  .project-name { font-size: 1rem; font-weight: 700; color: var(--heading); margin-bottom: 0.45rem; line-height: 1.3; transition: color 0.4s ease; }
+  .project-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.75; margin-bottom: 1.1rem; flex: 1; }
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: auto; }
+  .tag {
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.12rem 0.45rem;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    transition: border-color 0.4s ease;
+  }
+
+  /* Hover "view project" indicator */
+  .project-view {
+    position: absolute;
+    top: 0.75rem; right: 0.75rem;
+    background: rgba(8,9,16,0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: #fff;
+    font-size: 0.68rem;
+    font-family: var(--mono);
+    padding: 0.32rem 0.65rem;
+    border-radius: 999px;
+    display: flex; align-items: center; gap: 0.35rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .project-view svg { width: 11px; height: 11px; }
+  .project-card:hover .project-view { opacity: 1; transform: translateY(0); }
+
+  /* ─── LOCKED PROJECT CARD ─── */
+  .project-card.locked .lock-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    text-align: center;
+    padding: 1.5rem;
+    background: linear-gradient(160deg, rgba(108,99,255,0.28), rgba(56,189,248,0.14));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 4;
+  }
+  [data-theme="light"] .project-card.locked .lock-overlay {
+    background: linear-gradient(160deg, rgba(124,58,237,0.18), rgba(2,132,199,0.12));
+  }
+  .lock-icon-wrap {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+  }
+  .lock-icon-wrap svg { width: 19px; height: 19px; }
+  .lock-text {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 700;
+  }
+  .lock-sub {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.75);
+    max-width: 220px;
+    line-height: 1.6;
+  }
+
+  /* ─── CONTACT ─── */
+  .contact-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 3.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+  .contact-wrap::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 200px;
+    background: radial-gradient(ellipse, rgba(108,99,255,0.12), transparent 70%);
+    pointer-events: none;
+  }
+  .contact-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--heading);
+    margin-bottom: 0.75rem;
+    transition: color 0.4s ease;
+  }
+  .contact-wrap p {
+    color: var(--muted);
+    max-width: 380px;
+    margin: 0 auto 2.25rem;
+    font-size: 0.925rem;
+    line-height: 1.8;
+  }
+  .contact-links { display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap; }
+  .contact-link {
+    display: flex; align-items: center; gap: 0.55rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.65rem 1.3rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: border-color 0.2s, color 0.2s, transform 0.15s, background-color 0.4s ease;
+  }
+  .contact-link svg { width: 16px; height: 16px; }
+  .contact-link:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    transform: translateY(-2px);
+    background: rgba(167,139,250,0.05);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-family: var(--mono);
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 1;
+    letter-spacing: 0.05em;
+    transition: border-color 0.4s ease;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; transition: border-color 0.4s ease; }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px) skewY(0.4deg);
+    transition: opacity 0.75s cubic-bezier(0.16,1,0.3,1), transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    will-change: opacity, transform;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0) skewY(0deg);
+  }
+  .reveal-delay-1 { transition-delay: 0.08s; }
+  .reveal-delay-2 { transition-delay: 0.16s; }
+  .reveal-delay-3 { transition-delay: 0.24s; }
+  .reveal-delay-4 { transition-delay: 0.32s; }
+
+  /* project card reveal: slide in from slight angle */
+  .project-card.reveal {
+    transform: translateY(40px) scale(0.97);
+    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .project-card.reveal.visible {
+    transform: translateY(0) scale(1);
+  }
+
+  /* skill card reveal: pop in */
+  .skill-card.reveal {
+    transform: translateY(20px) scale(0.95);
+    transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .skill-card.reveal.visible {
+    transform: translateY(0) scale(1);
+  }
+
+  /* ─── FADE UP KEYFRAME ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── MAGNETIC CURSOR GLOW ─── */
+  .cursor-glow {
+    position: fixed;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(circle, rgba(108,99,255,0.055) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    transition: opacity 0.4s ease;
+    will-change: left, top;
+  }
+  [data-theme="light"] .cursor-glow {
+    background: radial-gradient(circle, rgba(108,99,255,0.045) 0%, transparent 70%);
+  }
+
+  /* ─── HERO NAME LETTER SPLIT ─── */
+  .hero-name .char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px) rotate(3deg);
+    animation: charIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes charIn {
+    to { opacity: 1; transform: translateY(0) rotate(0deg); }
+  }
+
+  /* ─── SECTION TITLE UNDERLINE DRAW ─── */
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--accent), var(--accent3));
+    transition: width 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s;
+    border-radius: 2px;
+  }
+  .section-title.visible::after,
+  .reveal.visible + .section-title::after {
+    width: 60%;
+  }
+
+  /* ─── STAT BOX HOVER SHIMMER ─── */
+  .stat-box {
+    overflow: hidden;
+  }
+  .stat-box::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.06), transparent);
+    transform: skewX(-15deg);
+    transition: left 0.5s ease;
+    pointer-events: none;
+  }
+  .stat-box { position: relative; }
+  .stat-box:hover::after { left: 120%; }
+
+  /* ─── NAV ACTIVE STATE ─── */
+  .nav-links a.active { color: var(--text); }
+  .nav-links a.active::after { transform: scaleX(1); }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-right { gap: 1rem; }
+    .nav-links { gap: 1.25rem; }
+    section { padding: 5rem 1.25rem; }
+    #hero { padding: 7rem 1.25rem 4rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .contact-wrap { padding: 2rem 1.25rem; }
+    .scroll-hint { display: none; }
+  }
+
+  /* ─── REDUCED MOTION ─── */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- Ambient glow orbs -->
+<div class="glow-orb glow-orb-1"></div>
+<div class="glow-orb glow-orb-2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">john<span>.</span>portfolio</div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch between light and dark theme" type="button">
+      <span class="theme-icon sun-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8l1.8-1.8M18 6l1.8-1.8"/>
+        </svg>
+      </span>
+      <span class="theme-icon moon-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>
+        </svg>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-eyebrow">
+    <span class="status-dot"></span>
+    Available for opportunities
+  </div>
+  <h1 class="hero-name">Hi, I'm <span class="highlight">Your Name</span></h1>
+  <p class="hero-title">Roblox Developer → <span class="typed-accent">Future Web & App Developer</span><span class="blink">_</span></p>
+  <p class="hero-desc">
+    I started building in Roblox and I'm on my way to becoming a full-stack developer.
+    Passionate about creating experiences — whether in games or on the web.
+  </p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn-primary">See my work</a>
+    <a href="#contact" class="btn-outline">Get in touch</a>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="scroll-mouse"></div>
+    <span>Scroll</span>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label reveal">Who I am</div>
+  <h2 class="section-title reveal reveal-delay-1">About me</h2>
+  <div class="about-grid">
+    <div class="about-text reveal reveal-delay-2">
+      <p>
+        I'm a <strong>Roblox developer</strong> currently leveling up my skills toward
+        web and app development. I love building things from scratch and figuring out how
+        they work under the hood.
+      </p>
+      <p>
+        My journey started in Roblox Studio, scripting games with Lua — and that same
+        curiosity is now pushing me into <strong>HTML, CSS, JavaScript</strong>, and beyond.
+      </p>
+      <p>
+        I'm driven, self-taught, and always learning. My goal is to build real products
+        that people actually use and enjoy.
+      </p>
+    </div>
+    <div class="about-stats reveal reveal-delay-3">
+      <div class="stat-box">
+        <div class="stat-num">Lua</div>
+        <div class="stat-label">First language</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Curiosity level</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">Web</div>
+        <div class="stat-label">Next goal</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">Now</div>
+        <div class="stat-label">Ready to grow</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label reveal">What I know</div>
+  <h2 class="section-title reveal reveal-delay-1">Skills</h2>
+  <div class="skills-grid">
+
+    <div class="skill-card reveal reveal-delay-1">
+      <div class="skill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 8h10a4 4 0 0 1 4 4l.6 4.2a2 2 0 0 1-3.3 1.8L16 16H8l-2.3 2a2 2 0 0 1-3.3-1.8L3 12a4 4 0 0 1 4-4z"/>
+          <path d="M8 11v2M7 12h2"/>
+          <circle cx="15.5" cy="11" r="0.6" fill="currentColor" stroke="none"/>
+          <circle cx="17.5" cy="13" r="0.6" fill="currentColor" stroke="none"/>
+        </svg>
+      </div>
+      <div class="skill-name">Lua / Roblox</div>
+      <div class="skill-meta">
+        <span class="skill-level">Main skill</span>
+        <span class="skill-percent" data-target="80">0%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+    </div>
+
+    <div class="skill-card reveal reveal-delay-2">
+      <div class="skill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M3 12h18"/>
+          <path d="M12 3c2.4 2.5 3.8 5.7 3.8 9s-1.4 6.5-3.8 9c-2.4-2.5-3.8-5.7-3.8-9s1.4-6.5 3.8-9z"/>
+        </svg>
+      </div>
+      <div class="skill-name">HTML & CSS</div>
+      <div class="skill-meta">
+        <span class="skill-level">Learning</span>
+        <span class="skill-percent" data-target="45">0%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill" data-width="45"></div></div>
+    </div>
+
+    <div class="skill-card reveal reveal-delay-3">
+      <div class="skill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/>
+        </svg>
+      </div>
+      <div class="skill-name">JavaScript</div>
+      <div class="skill-meta">
+        <span class="skill-level">Beginner</span>
+        <span class="skill-percent" data-target="25">0%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill" data-width="25"></div></div>
+    </div>
+
+    <div class="skill-card reveal reveal-delay-1">
+      <div class="skill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 3a4.2 4.2 0 0 1-5.4 5.4L8 16l-3 3-2-2 3-3 7.6-7.6A4.2 4.2 0 0 1 21 3z"/>
+          <path d="M6 16l2 2"/>
+        </svg>
+      </div>
+      <div class="skill-name">Roblox Studio</div>
+      <div class="skill-meta">
+        <span class="skill-level">Confident</span>
+        <span class="skill-percent" data-target="75">0%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+    </div>
+
+    <div class="skill-card reveal reveal-delay-2">
+      <div class="skill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18h6"/>
+          <path d="M10 21h4"/>
+          <path d="M12 3a6 6 0 0 0-3.5 10.9c.3.25.5.65.5 1.1v.5h6v-.5c0-.45.2-.85.5-1.1A6 6 0 0 0 12 3z"/>
+        </svg>
+      </div>
+      <div class="skill-name">Problem solving</div>
+      <div class="skill-meta">
+        <span class="skill-level">Always improving</span>
+        <span class="skill-percent" data-target="70">0%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+    </div>
+
+    <div class="skill-card reveal reveal-delay-3">
+      <div class="skill-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="6" y="2" width="12" height="20" rx="2.5"/>
+          <path d="M10 18.5h4"/>
+        </svg>
+      </div>
+      <div class="skill-name">App dev</div>
+      <div class="skill-meta">
+        <span class="skill-level">Coming soon</span>
+        <span class="skill-percent" data-target="10">0%</span>
+      </div>
+      <div class="skill-bar"><div class="skill-fill" data-width="10"></div></div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label reveal">What I have built</div>
+  <h2 class="section-title reveal reveal-delay-1">Projects</h2>
+
+  <!--
+    ============================================================
+    HOW TO ADD A SCREENSHOT, IMAGE OR VIDEO TO A PROJECT CARD
+    ============================================================
+
+    Each project card currently shows a placeholder like this:
+
+      <div class="project-thumb-placeholder">
+        <div class="placeholder-icon"> ...svg icon... </div>
+      </div>
+
+    1) TO ADD AN IMAGE:
+       Replace the whole placeholder block above with:
+
+         <div class="project-thumb">
+           <img src="YOUR_IMAGE_PATH_OR_URL.jpg" alt="Short description of the project" />
+         </div>
+
+    2) TO ADD A VIDEO (auto-plays silently on loop):
+
+         <div class="project-thumb">
+           <video src="YOUR_VIDEO_PATH_OR_URL.mp4" autoplay loop muted playsinline></video>
+         </div>
+
+    3) RECOMMENDED SPECS
+       - Aspect ratio: 16:9 (e.g. 1280x720) so it fills the thumbnail perfectly.
+       - Images: .jpg or .png, ideally under 500KB.
+       - Videos: .mp4, short loops (5-10 sec), ideally under 5MB.
+
+    4) WHERE TO HOST FILES
+       - Put the file in the same folder as this HTML and use a relative path,
+         e.g. src="images/my-game.png"
+       - Or upload to your GitHub repo and use the "raw" link:
+         https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/images/my-game.png
+
+    5) MAKE A CARD CLICKABLE (open the project in a new tab)
+       Wrap the entire card in a link and remove the outer <div> tags:
+
+         <a href="https://your-project-link.com" target="_blank"
+            class="project-card reveal reveal-delay-1">
+           ... everything that was inside the card ...
+         </a>
+
+    ============================================================
+  -->
+
+  <div class="projects-grid">
+
+    <!-- Project 1: Roblox -->
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-thumb-placeholder">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 8h10a4 4 0 0 1 4 4l.6 4.2a2 2 0 0 1-3.3 1.8L16 16H8l-2.3 2a2 2 0 0 1-3.3-1.8L3 12a4 4 0 0 1 4-4z"/>
+            <path d="M8 11v2M7 12h2"/>
+            <circle cx="15.5" cy="11" r="0.6" fill="currentColor" stroke="none"/>
+            <circle cx="17.5" cy="13" r="0.6" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="project-view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17 17 7M9 7h8v8"/>
+        </svg>
+        View
+      </div>
+      <div class="project-body">
+        <div class="project-badge">Roblox</div>
+        <div class="project-name">Where it all started</div>
+        <div class="project-desc">My first real project built in Roblox Studio — Lua scripting, game mechanics, and level design from scratch.</div>
+        <div class="project-tags">
+          <span class="tag">Lua</span>
+          <span class="tag">Roblox Studio</span>
+          <span class="tag">Game design</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 2: Portfolio -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-thumb-placeholder">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M3 12h18"/>
+            <path d="M12 3c2.4 2.5 3.8 5.7 3.8 9s-1.4 6.5-3.8 9c-2.4-2.5-3.8-5.7-3.8-9s1.4-6.5 3.8-9z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="project-view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17 17 7M9 7h8v8"/>
+        </svg>
+        View
+      </div>
+      <div class="project-body">
+        <div class="project-badge">Web</div>
+        <div class="project-name">This portfolio</div>
+        <div class="project-desc">Built with pure HTML & CSS — my first step into web dev. Dark, clean, and made entirely by me.</div>
+        <div class="project-tags">
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+          <span class="tag">Design</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 3: Locked / coming soon
+         To unlock once this project is ready:
+         1. Delete the whole <div class="lock-overlay"> ... </div> block below.
+         2. Remove the "locked" class from this card's outer div.
+         3. Swap the placeholder icon for a real screenshot/video (see guide above).
+    -->
+    <div class="project-card locked reveal reveal-delay-3">
+      <div class="project-thumb-placeholder">
+        <div class="placeholder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.5c3 1.2 5 4.3 5 7.8 0 2-0.8 4-2 5.3l-0.7 3.4-2.3-1.8-2.3 1.8-0.7-3.4c-1.2-1.3-2-3.3-2-5.3 0-3.5 2-6.6 5-7.8z"/>
+            <circle cx="12" cy="9.5" r="1.4"/>
+            <path d="M8.5 14.5c-1.6 0.2-2.8 1.7-2.8 4 2.3 0.2 4-1 4.2-2.6"/>
+            <path d="M15.5 14.5c1.6 0.2 2.8 1.7 2.8 4-2.3 0.2-4-1-4.2-2.6"/>
+          </svg>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-badge">Coming soon</div>
+        <div class="project-name">Next project</div>
+        <div class="project-desc">Currently learning and building. Something new is on the way — stay tuned.</div>
+        <div class="project-tags">
+          <span class="tag">JavaScript</span>
+          <span class="tag">TBD</span>
+        </div>
+      </div>
+      <div class="lock-overlay">
+        <div class="lock-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="11" width="14" height="9" rx="2"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+          </svg>
+        </div>
+        <div class="lock-text">Locked</div>
+        <div class="lock-sub">This project unlocks once it's ready to show</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label reveal">Let's connect</div>
+  <h2 class="section-title reveal reveal-delay-1">Contact</h2>
+  <div class="contact-wrap reveal reveal-delay-2">
+    <div class="contact-title">Let's build something together</div>
+    <p>Whether you want to collaborate, give feedback, or just say hi — I'd love to hear from you.</p>
+    <div class="contact-links">
+      <a href="johnngudioo@gmail.com" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/>
+          <path d="M3 6.5l9 6 9-6"/>
+        </svg>
+        Email me
+      </a>
+      <a href="https://github.com/Johnnnnnx" target="_blank" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0.5C5.7 0.5 0.6 5.6 0.6 11.9c0 5 3.2 9.2 7.7 10.7 0.6 0.1 0.8-0.2 0.8-0.6v-2.2c-3.1 0.7-3.8-1.3-3.8-1.3-0.5-1.3-1.3-1.7-1.3-1.7-1-0.7 0.1-0.7 0.1-0.7 1.2 0.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 0.1-0.7 0.4-1.3 0.7-1.6-2.5-0.3-5.1-1.3-5.1-5.5 0-1.2 0.4-2.2 1.2-3-0.1-0.3-0.5-1.5 0.1-3.1 0 0 1-0.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2 0.6 1.6 0.2 2.8 0.1 3.1 0.8 0.8 1.2 1.9 1.2 3 0 4.3-2.6 5.2-5.1 5.5 0.4 0.4 0.8 1.1 0.8 2.2v3.3c0 0.4 0.2 0.7 0.8 0.6 4.5-1.5 7.7-5.7 7.7-10.7C23.4 5.6 18.3 0.5 12 0.5z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  built by <span style="background: linear-gradient(135deg, #a78bfa, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">your name</span> · 2025
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  CURSOR GLOW — soft radial follows mouse
+// ══════════════════════════════════════════════════════════════
+(function () {
+  const glow = document.getElementById('cursorGlow');
+  if (!glow) return;
+  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+  let cx = mx, cy = my;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  (function loop() {
+    cx += (mx - cx) * 0.07;
+    cy += (my - cy) * 0.07;
+    glow.style.left = cx + 'px';
+    glow.style.top  = cy + 'px';
+    requestAnimationFrame(loop);
+  })();
+})();
+
+// ══════════════════════════════════════════════════════════════
+//  HERO NAME — split letters & stagger them in
+// ══════════════════════════════════════════════════════════════
+(function () {
+  const nameEl = document.querySelector('.hero-name');
+  if (!nameEl) return;
+
+  // Walk child nodes; split text but preserve .highlight span
+  function splitNode(node, baseDelay) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const frag = document.createDocumentFragment();
+      [...node.textContent].forEach((ch, i) => {
+        const s = document.createElement('span');
+        s.className = 'char';
+        s.style.animationDelay = (baseDelay + i * 0.028) + 's';
+        s.textContent = ch === ' ' ? '\u00a0' : ch;
+        frag.appendChild(s);
+      });
+      return { frag, count: node.textContent.length };
+    }
+    return null;
+  }
+
+  let charCount = 0;
+  const nodes = [...nameEl.childNodes];
+  nodes.forEach(node => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const result = splitNode(node, 0.35 + charCount * 0.028);
+      if (result) {
+        nameEl.replaceChild(result.frag, node);
+        charCount += result.count;
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      // split inside .highlight too
+      const inner = node.textContent;
+      node.innerHTML = '';
+      [...inner].forEach((ch, i) => {
+        const s = document.createElement('span');
+        s.className = 'char';
+        s.style.animationDelay = (0.35 + (charCount + i) * 0.028) + 's';
+        s.textContent = ch === ' ' ? '\u00a0' : ch;
+        node.appendChild(s);
+      });
+      charCount += inner.length;
+    }
+  });
+})();
+
+// ══════════════════════════════════════════════════════════════
+//  THEME TOGGLE — canvas wave wash across the page
+// ══════════════════════════════════════════════════════════════
+(function () {
+  const root   = document.documentElement;
+  const btn    = document.getElementById('themeToggle');
+  if (!btn) return;
+
+  btn.addEventListener('click', function () {
+    const current = root.getAttribute('data-theme') || 'dark';
+    const next    = current === 'dark' ? 'light' : 'dark';
+
+    // Spin the toggle icon
+    btn.classList.remove('spinning');
+    void btn.offsetWidth;
+    btn.classList.add('spinning');
+    btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
+
+    // Colors for the wave fill
+    const fromColor = current === 'dark'
+      ? [8,   9,  16]     // dark bg
+      : [244, 244, 249];  // light bg
+    const toColor   = next    === 'dark'
+      ? [8,   9,  16]
+      : [244, 244, 249];
+
+    // Origin = center of toggle button
+    const r   = btn.getBoundingClientRect();
+    const ox  = r.left + r.width  / 2;
+    const oy  = r.top  + r.height / 2;
+
+    // Max radius needed to cover entire viewport
+    const maxR = Math.hypot(
+      Math.max(ox, window.innerWidth  - ox),
+      Math.max(oy, window.innerHeight - oy)
+    ) * 1.05;
+
+    // Build overlay
+    const wrap   = document.createElement('div');
+    wrap.className = 'theme-wave';
+    const canvas = document.createElement('canvas');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    wrap.appendChild(canvas);
+    document.body.appendChild(wrap);
+
+    const ctx = canvas.getContext('2d');
+    const dur = 680; // ms
+    let start = null;
+
+    // Organic wave edge: the leading circle is distorted by multiple sin waves
+    function drawFrame(ts) {
+      if (!start) start = ts;
+      const t = Math.min((ts - start) / dur, 1);
+
+      // Ease: expo out
+      const ease = 1 - Math.pow(1 - t, 4);
+      const radius = ease * maxR;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw organic blob by sampling points around the circle with wave distortion
+      const pts = 180;
+      ctx.beginPath();
+      for (let i = 0; i <= pts; i++) {
+        const angle = (i / pts) * Math.PI * 2;
+        // Stack a few sin waves on the radius for an organic wobble
+        const wobble = radius * (
+          0.012 * Math.sin(angle * 3 + t * 8) +
+          0.008 * Math.sin(angle * 7 - t * 12) +
+          0.005 * Math.sin(angle * 11 + t * 5)
+        );
+        const r2 = Math.max(0, radius + wobble * (1 - ease)); // wobble fades out as it covers screen
+        const x = ox + r2 * Math.cos(angle);
+        const y = oy + r2 * Math.sin(angle);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+
+      // Fill colour transitions from fromColor → toColor mid-animation
+      const blend = Math.min(t * 2, 1);
+      const rc = Math.round(fromColor[0] + (toColor[0] - fromColor[0]) * blend);
+      const gc = Math.round(fromColor[1] + (toColor[1] - fromColor[1]) * blend);
+      const bc = Math.round(fromColor[2] + (toColor[2] - fromColor[2]) * blend);
+      ctx.fillStyle = `rgb(${rc},${gc},${bc})`;
+      ctx.fill();
+
+      // Switch the actual theme right at the wave's midpoint
+      if (t >= 0.48 && !wrap.dataset.switched) {
+        wrap.dataset.switched = '1';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+      }
+
+      if (t < 1) {
+        requestAnimationFrame(drawFrame);
+      } else {
+        // Final frame: ensure theme is set and fade out
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+        wrap.style.transition = 'opacity 0.18s ease';
+        wrap.style.opacity = '0';
+        setTimeout(() => wrap.remove(), 200);
+      }
+    }
+
+    requestAnimationFrame(drawFrame);
+  });
+})();
+
+// ══════════════════════════════════════════════════════════════
+//  PERCENTAGE COUNTER
+// ══════════════════════════════════════════════════════════════
+function animateCount(el, target) {
+  const duration = 1100;
+  let start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    const p = Math.min((ts - start) / duration, 1);
+    // ease out quart
+    const e = 1 - Math.pow(1 - p, 4);
+    el.textContent = Math.round(e * target) + '%';
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SCROLL REVEAL
+// ══════════════════════════════════════════════════════════════
+(function () {
+  document.querySelectorAll('.skill-fill').forEach(f => { f.style.width = '0%'; });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target;
+      el.classList.add('visible');
+
+      // Skill bar + counter
+      const fill = el.querySelector('.skill-fill');
+      if (fill) {
+        const w = parseInt(fill.dataset.width, 10);
+        const pct = el.querySelector('.skill-percent');
+        setTimeout(() => {
+          fill.style.width = w + '%';
+          fill.classList.add('animated');
+          if (pct) animateCount(pct, w);
+        }, 160);
+      }
+
+      observer.unobserve(el);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+})();
+
+// ══════════════════════════════════════════════════════════════
+//  NAV ACTIVE STATE — highlight current section
+// ══════════════════════════════════════════════════════════════
+(function () {
+  const sections = document.querySelectorAll('section[id], div[id="hero"]');
+  const links    = document.querySelectorAll('.nav-links a');
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => io.observe(s));
+})();
+</script>
+</body>
+</html> 
