@@ -6,7 +6,7 @@
 <title>John's Porfolio</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <script>
-  /* Set theme before first paint to avoid a flash of the wrong theme */
+
   (function () {
     try {
       var saved = localStorage.getItem('portfolio-theme');
@@ -20,53 +20,40 @@
   })();
 </script>
 
-<!-- ════════════════════════════════════════════════════════════
-     ANTI-COPY PROTECTION
-     Prevents users from easily copying source code. Note: determined
-     users can still access via dev tools, but this deters casual copying.
-     ════════════════════════════════════════════════════════════ -->
 <script>
   (function () {
-    // Disable right-click context menu
+
     document.addEventListener('contextmenu', function (e) {
       e.preventDefault();
       return false;
     }, false);
 
-    // Disable text selection
     document.addEventListener('selectstart', function (e) {
       e.preventDefault();
       return false;
     }, false);
 
-    // Disable copy via Ctrl+C / Cmd+C
     document.addEventListener('copy', function (e) {
       e.preventDefault();
       return false;
     }, false);
 
-    // Disable cut via Ctrl+X / Cmd+X
     document.addEventListener('cut', function (e) {
       e.preventDefault();
       return false;
     }, false);
 
-    // Disable view source via Ctrl+U
     document.addEventListener('keydown', function (e) {
       if ((e.ctrlKey || e.metaKey) && e.keyCode === 85) { // Ctrl+U or Cmd+U
         e.preventDefault();
         return false;
       }
-      // Also block F12 (Dev Tools) and Ctrl+Shift+I (Dev Tools)
       if (e.keyCode === 123 || ((e.ctrlKey || e.metaKey) && e.shiftKey && e.keyCode === 73)) {
         e.preventDefault();
         return false;
       }
     }, false);
 
-    // Detect dev tools (optional, will show alert if opened)
-    // Uncomment if you want to warn users opening dev tools
-    /*
     let devtools = { open: false };
     let threshold = 160;
 
@@ -80,7 +67,7 @@
         devtools.open = false;
       }
     }, 500);
-    */
+  
   })();
 </script>
 <style>
@@ -102,7 +89,6 @@
     --sans: 'Space Grotesk', sans-serif;
   }
 
-  /* ─── LIGHT THEME ─── */
   [data-theme="light"] {
     --bg: #f4f4f9;
     --surface: #ffffff;
@@ -129,7 +115,6 @@
     transition: background-color 0.5s ease, color 0.5s ease;
   }
 
-  /* ─── NOISE TEXTURE OVERLAY ─── */
   body::before {
     content: '';
     position: fixed;
@@ -140,7 +125,6 @@
     opacity: 0.4;
   }
 
-  /* ─── AMBIENT GLOW ─── */
   .glow-orb {
     position: fixed;
     border-radius: 50%;
@@ -166,7 +150,6 @@
   @keyframes drift1 { to { transform: translate(80px, 120px); } }
   @keyframes drift2 { to { transform: translate(-60px, -80px); } }
 
-  /* ─── NAV ─── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
@@ -212,7 +195,6 @@
   .nav-links a:hover { color: var(--text); }
   .nav-links a:hover::after { transform: scaleX(1); }
 
-  /* ─── THEME TOGGLE ─── */
   .theme-toggle {
     width: 38px; height: 38px;
     flex-shrink: 0;
@@ -246,7 +228,6 @@
   [data-theme="light"] .sun-icon { opacity: 1; transform: rotate(0deg) scale(1); }
   [data-theme="light"] .moon-icon { opacity: 0; transform: rotate(90deg) scale(0.4); }
 
-  /* ─── THEME WAVE TRANSITION ─── */
   .theme-wave {
     position: fixed;
     pointer-events: none;
@@ -264,7 +245,6 @@
     display: block;
   }
 
-  /* toggle animations */
   .theme-toggle.spinning {
     animation: toggleSpin 0.55s cubic-bezier(0.34,1.56,0.64,1);
   }
@@ -280,7 +260,6 @@
     100% { transform: scale(1); }
   }
 
-  /* ─── LAYOUT ─── */
   section {
     padding: 7rem 2.5rem;
     max-width: 920px;
@@ -289,7 +268,6 @@
     z-index: 1;
   }
 
-  /* ─── HERO ─── */
   #hero {
     min-height: 100vh;
     display: flex;
@@ -438,11 +416,9 @@
     transform: translateY(-2px);
   }
 
-  /* CURSOR BLINK */
   .blink { animation: blink 1s step-end infinite; color: var(--accent3); transition: color 0.4s ease; }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* SCROLL INDICATOR */
   .scroll-hint {
     position: absolute;
     bottom: 2.5rem;
@@ -489,7 +465,6 @@
     100% { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 
-  /* ─── SECTION HEADERS ─── */
   .section-label {
     font-family: var(--mono);
     font-size: 0.7rem;
@@ -518,7 +493,6 @@
     position: relative;
   }
 
-  /* ─── ABOUT ─── */
   .about-grid {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -558,7 +532,6 @@
   }
   .stat-label { font-size: 0.75rem; color: var(--muted); }
 
-  /* ─── SKILLS ─── */
   .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -662,7 +635,6 @@
   }
   .skill-fill.animated { transform: scaleX(1); }
 
-  /* ─── PROJECTS ─── */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
@@ -689,7 +661,6 @@
     box-shadow: 0 20px 50px rgba(108,99,255,0.18), 0 0 0 1px rgba(108,99,255,0.12);
   }
 
-  /* Thumbnail area */
   .project-thumb {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -715,7 +686,6 @@
     filter: brightness(1.05);
   }
 
-  /* Placeholder thumb for cards without images */
   .project-thumb-placeholder {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -751,7 +721,6 @@
     color: var(--accent3);
   }
 
-  /* Animated shimmer line on top of card */
   .project-card::before {
     content: '';
     position: absolute;
@@ -793,7 +762,6 @@
     transition: border-color 0.4s ease;
   }
 
-  /* Hover "view project" indicator */
   .project-view {
     position: absolute;
     top: 0.75rem; right: 0.75rem;
@@ -818,7 +786,6 @@
   .project-view svg { width: 11px; height: 11px; }
   .project-card:hover .project-view { opacity: 1; transform: translateY(0); }
 
-  /* ─── LOCKED PROJECT CARD ─── */
   .project-card.locked .lock-overlay {
     position: absolute;
     inset: 0;
@@ -861,7 +828,6 @@
     line-height: 1.6;
   }
 
-  /* ─── CONTACT ─── */
   .contact-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -960,7 +926,6 @@
     transform: rotate(-8deg) scale(1.04);
   }
 
-  /* ─── FOOTER ─── */
   footer {
     text-align: center;
     padding: 2.5rem;
@@ -974,10 +939,8 @@
     transition: border-color 0.4s ease;
   }
 
-  /* ─── DIVIDER ─── */
   .divider { border: none; border-top: 1px solid var(--border); margin: 0; transition: border-color 0.4s ease; }
 
-  /* ─── SCROLL REVEAL ─── */
   .reveal {
     opacity: 0;
     transform: translateY(32px) skewY(0.4deg);
@@ -993,7 +956,6 @@
   .reveal-delay-3 { transition-delay: 0.24s; }
   .reveal-delay-4 { transition-delay: 0.32s; }
 
-  /* project card reveal: slide in from slight angle */
   .project-card.reveal {
     transform: translateY(40px) scale(0.97);
     transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
@@ -1002,7 +964,6 @@
     transform: translateY(0) scale(1);
   }
 
-  /* skill card reveal: pop in */
   .skill-card.reveal {
     transform: translateY(20px) scale(0.95);
     transition: opacity 0.6s cubic-bezier(0.34,1.56,0.64,1), transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
@@ -1011,13 +972,11 @@
     transform: translateY(0) scale(1);
   }
 
-  /* ─── FADE UP KEYFRAME ─── */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(22px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ─── MAGNETIC CURSOR GLOW ─── */
   .cursor-glow {
     position: fixed;
     width: 380px;
@@ -1034,7 +993,6 @@
     background: radial-gradient(circle, rgba(108,99,255,0.045) 0%, transparent 70%);
   }
 
-  /* ─── HERO NAME LETTER SPLIT ─── */
   .hero-name .char {
     display: inline-block;
     opacity: 0;
@@ -1045,7 +1003,6 @@
     to { opacity: 1; transform: translateY(0) rotate(0deg); }
   }
 
-  /* ─── SECTION TITLE UNDERLINE DRAW ─── */
   .section-title::after {
     content: '';
     position: absolute;
@@ -1062,7 +1019,6 @@
     width: 60%;
   }
 
-  /* ─── STAT BOX HOVER SHIMMER ─── */
   .stat-box {
     overflow: hidden;
   }
@@ -1081,11 +1037,9 @@
   .stat-box { position: relative; }
   .stat-box:hover::after { left: 120%; }
 
-  /* ─── NAV ACTIVE STATE ─── */
   .nav-links a.active { color: var(--text); }
   .nav-links a.active::after { transform: scaleX(1); }
 
-  /* ─── MOBILE NAV BURGER ─── */
   .nav-burger {
     display: none;
     width: 38px; height: 38px;
@@ -1104,9 +1058,6 @@
   .nav-burger svg { width: 18px; height: 18px; }
   .nav-burger svg path { transition: d 0.2s ease, opacity 0.2s ease; }
 
-  /* ══════════════════════════════════════════════════
-     GALLERY (image carousel inside a project thumb)
-     ══════════════════════════════════════════════════ */
   .project-gallery {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -1147,7 +1098,6 @@
     filter: brightness(1.05);
   }
 
-  /* nav arrows */
   .gallery-btn {
     position: absolute;
     top: 50%;
@@ -1172,7 +1122,6 @@
   .project-card:hover .gallery-btn,
   .project-gallery:focus-within .gallery-btn { opacity: 1; }
 
-  /* dots */
   .gallery-dots {
     position: absolute;
     bottom: 0.6rem;
@@ -1196,7 +1145,6 @@
     transform: scale(1.25);
   }
 
-  /* counter badge */
   .gallery-counter {
     position: absolute;
     top: 0.75rem; left: 0.75rem;
@@ -1214,7 +1162,6 @@
     pointer-events: none;
   }
 
-  /* ─── MOBILE ─── */
   @media (max-width: 640px) {
     nav { padding: 1rem 1.25rem; }
     .nav-right { gap: 0.6rem; }
@@ -1258,17 +1205,15 @@
     .about-grid { grid-template-columns: 1fr; gap: 2rem; }
     .contact-wrap { padding: 2rem 1.25rem; }
     .scroll-hint { display: none; }
-    .gallery-btn { opacity: 1; } /* always show on touch devices */
+    .gallery-btn { opacity: 1; } 
   }
 
-  /* slightly larger phones can show a bit more before scrolling the menu */
   @media (max-width: 360px) {
     .hero-desc { font-size: 0.9rem; }
     .about-stats { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
     .stat-box { padding: 1rem; }
   }
 
-  /* ─── REDUCED MOTION ─── */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
@@ -1276,14 +1221,12 @@
 </head>
 <body>
 
-<!-- Cursor glow -->
 <div class="cursor-glow" id="cursorGlow"></div>
 
-<!-- Ambient glow orbs -->
 <div class="glow-orb glow-orb-1"></div>
 <div class="glow-orb glow-orb-2"></div>
 
-<!-- NAV -->
+<!-- navigations -->
 <nav>
   <div class="nav-logo">john<span>.</span>portfolio</div>
   <div class="nav-right">
@@ -1314,7 +1257,7 @@
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- profile hero ako e -->
 <div id="hero">
   <div class="hero-video-bg">
     <video autoplay muted loop playsinline>
@@ -1347,7 +1290,7 @@
 
 <hr class="divider"/>
 
-<!-- ABOUT -->
+<!-- about sections -->
 <section id="about">
   <div class="section-label reveal">Who I am</div>
   <h2 class="section-title reveal reveal-delay-1">About me</h2>
@@ -1390,7 +1333,7 @@
 
 <hr class="divider"/>
 
-<!-- SKILLS -->
+<!-- mga skills -->
 <section id="skills">
   <div class="section-label reveal">What i know</div>
   <h2 class="section-title reveal reveal-delay-1">Skills</h2>
@@ -1465,110 +1408,13 @@
 
 <hr class="divider"/>
 
-<!-- PROJECTS -->
+<!-- project section dito banda -->
 <section id="projects">
   <div class="section-label reveal">What I have built</div>
   <h2 class="section-title reveal reveal-delay-1">Projects</h2>
 
-  <!--
-    ============================================================
-    HOW TO ADD A SCREENSHOT, IMAGE OR VIDEO TO A PROJECT CARD
-    ============================================================
-
-    Each project card currently shows a placeholder like this:
-
-      <div class="project-thumb-placeholder">
-        <div class="placeholder-icon"> ...svg icon... </div>
-      </div>
-
-    1) TO ADD A SINGLE IMAGE:
-       Replace the whole placeholder block above with:
-
-         <div class="project-thumb">
-           <img src="YOUR_IMAGE_PATH_OR_URL.jpg" alt="Short description of the project" />
-         </div>
-
-    2) TO ADD A VIDEO (auto-plays silently on loop):
-
-         <div class="project-thumb">
-           <video src="YOUR_VIDEO_PATH_OR_URL.mp4" autoplay loop muted playsinline></video>
-         </div>
-
-    3) TO ADD A PICTURE GALLERY (multiple images with Prev / Next)
-       ------------------------------------------------------------
-       This is what Project 1 below now uses. To add a gallery to
-       ANY card, replace its placeholder / thumb block with this
-       structure (copy-paste and edit the image paths):
-
-         <div class="project-gallery" data-gallery>
-           <div class="gallery-track">
-             <div class="gallery-slide"><img src="images/shot1.jpg" alt="Screenshot 1"></div>
-             <div class="gallery-slide"><img src="images/shot2.jpg" alt="Screenshot 2"></div>
-             <div class="gallery-slide"><img src="images/shot3.jpg" alt="Screenshot 3"></div>
-             [ add as many <div class="gallery-slide"><img ...></div> blocks as you want ]
-           </div>
-
-           <div class="gallery-counter" data-counter>1 / 3</div>
-
-           <button class="gallery-btn gallery-prev" type="button" aria-label="Previous image">
-             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-           </button>
-           <button class="gallery-btn gallery-next" type="button" aria-label="Next image">
-             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-           </button>
-
-           <div class="gallery-dots" data-dots>
-             [ one button per image — the script auto-generates these,
-               you do not need to write them by hand ]
-           </div>
-         </div>
-
-       NOTES ON THE GALLERY:
-       - Each .gallery-slide = one image. Add or remove as many as you like.
-       - The JS at the bottom of the page (search for "PROJECT GALLERY") will:
-           * automatically build the dots based on how many slides exist
-           * automatically set the "1 / N" counter
-           * wire up the Prev/Next buttons and dots
-           * support left/right arrow keys when the gallery is focused
-           * support swipe gestures on touch devices
-       - You don't need to write any extra JS — just add <div class="gallery-slide">
-         blocks with your images and everything else updates automatically.
-       - data-gallery is required on the outer div so the script can find it.
-
-    4) RECOMMENDED SPECS
-       - Aspect ratio: 16:9 (e.g. 1280x720) so it fills the thumbnail perfectly.
-       - Images: .jpg or .png, ideally under 500KB.
-       - Videos: .mp4, short loops (5-10 sec), ideally under 5MB.
-
-    5) WHERE TO HOST FILES
-       - Put the file in the same folder as this HTML and use a relative path,
-         e.g. src="images/my-game.png"
-       - Or upload to your GitHub repo and use the "raw" link:
-         https://raw.githubusercontent.com/USERNAME/REPO/BRANCH/images/my-game.png
-
-    6) MAKE A CARD CLICKABLE (open the project in a new tab)
-       Wrap the entire card in an <a> tag with class="project-card-link" so it
-       wraps around BOTH the thumbnail/gallery AND the body, like this:
-
-         <a href="https://your-project-link.com" target="_blank"
-            class="project-card reveal reveal-delay-1">
-           ... everything that was inside the card (gallery + body) ...
-         </a>
-
-       IMPORTANT IF THE CARD HAS A GALLERY:
-       Clicking the Prev/Next buttons or dots would normally also trigger the
-       link (since they're inside it). The gallery script already calls
-       event.preventDefault() / stopPropagation() on those buttons, so clicking
-       them will NOT navigate away — only clicking the image, badge, title,
-       description or tags will open the link. This is already set up for
-       Project 1 below.
-
-    ============================================================
-  -->
-
   <div class="projects-grid">
 
-    <!-- Project 1: Roblox (now with image gallery + clickable card) -->
     <a href="https://www.roblox.com/games/101725199602734/Eternal-PvP" target="_blank" class="project-card reveal reveal-delay-1">
 
       <div class="project-gallery" data-gallery>
@@ -1617,12 +1463,6 @@
       </div>
     </a>
 
-    <!-- Project 3: Locked / coming soon
-         To unlock once this project is ready:
-         1. Delete the whole <div class="lock-overlay"> ... </div> block below.
-         2. Remove the "locked" class from this card's outer div.
-         3. Swap the placeholder icon for a real screenshot/video/gallery (see guide above).
-    -->
     <div class="project-card locked reveal reveal-delay-3">
       <div class="project-thumb-placeholder">
         <div class="placeholder-icon">
@@ -1660,7 +1500,6 @@
 
 <hr class="divider"/>
 
-<!-- CONTACT -->
 <section id="contact">
   <div class="section-label reveal">Lets connect</div>
   <h2 class="section-title reveal reveal-delay-1">Contact</h2>
@@ -1702,9 +1541,7 @@
 </footer>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-//  CURSOR GLOW — soft radial follows mouse
-// ══════════════════════════════════════════════════════════════
+
 (function () {
   const glow = document.getElementById('cursorGlow');
   if (!glow) return;
@@ -1722,14 +1559,10 @@
   })();
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  HERO NAME — split letters & stagger them in
-// ══════════════════════════════════════════════════════════════
 (function () {
   const nameEl = document.querySelector('.hero-name');
   if (!nameEl) return;
 
-  // Walk child nodes; split text but preserve .highlight span
   function splitNode(node, baseDelay) {
     if (node.nodeType === Node.TEXT_NODE) {
       const frag = document.createDocumentFragment();
@@ -1755,7 +1588,6 @@
         charCount += result.count;
       }
     } else if (node.nodeType === Node.ELEMENT_NODE) {
-      // split inside .highlight too
       const inner = node.textContent;
       node.innerHTML = '';
       [...inner].forEach((ch, i) => {
@@ -1770,15 +1602,11 @@
   });
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  THEME TOGGLE — canvas wave wash across the page
-// ══════════════════════════════════════════════════════════════
 (function () {
   const root   = document.documentElement;
   const btn    = document.getElementById('themeToggle');
   if (!btn) return;
 
-  // Detect mobile for performance optimization
   const isMobile = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       || window.innerWidth < 768;
@@ -1792,33 +1620,26 @@
     const next    = current === 'dark' ? 'light' : 'dark';
     const mobile  = isMobile();
 
-    // Animate the toggle button with a smooth spin + pulse
     btn.classList.remove('spinning', 'pulse');
     void btn.offsetWidth;
     btn.classList.add('spinning');
     btn.classList.add('pulse');
     btn.addEventListener('animationend', () => btn.classList.remove('spinning', 'pulse'), { once: true });
 
-    // Colors for the wave fill
     const fromColor = current === 'dark'
-      ? [8,   9,  16]     // dark bg
-      : [244, 244, 249];  // light bg
+      ? [8,   9,  16] 
+      : [244, 244, 249];
     const toColor   = next    === 'dark'
       ? [8,   9,  16]
       : [244, 244, 249];
 
-    // Origin = center of toggle button
     const r   = btn.getBoundingClientRect();
     const ox  = r.left + r.width  / 2;
     const oy  = r.top + r.height / 2;
 
-    // Viewport size — used for both the canvas and the max radius.
-    // A small overscan keeps mobile browser chrome (URL bar show/hide)
-    // from ever leaving an uncovered sliver.
     const vw = Math.max(document.documentElement.clientWidth,  window.innerWidth  || 0);
     const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-    // Max radius needed to cover entire viewport (with overscan margin)
     const maxR = Math.hypot(
       Math.max(ox, vw - ox),
       Math.max(oy, vh - oy)
@@ -1828,8 +1649,7 @@
     wrap.className = 'theme-wave';
     wrap.style.opacity = '0';
     const canvas = document.createElement('canvas');
-    
-    // Use lower DPI on mobile for performance
+
     const dpr = mobile ? 1 : (window.devicePixelRatio || 1);
     canvas.width  = vw * dpr;
     canvas.height = vh * dpr;
@@ -1844,7 +1664,6 @@
     const dur = mobile ? 500 : 680; // Faster on mobile
     let start = null;
 
-    // Organic wave edge: the leading circle is distorted by multiple sin waves
 function drawFrame(ts) {
   if (!start) start = ts;
   const t = Math.min((ts - start) / dur, 1);
@@ -1854,16 +1673,14 @@ function drawFrame(ts) {
 
   ctx.clearRect(0, 0, vw, vh);
 
-  // Reduce layers on mobile
   const layers = mobile
-    ? [{ rMult: 1.00, alpha: 1.0 }]  // only main fill on mobile
+    ? [{ rMult: 1.00, alpha: 1.0 }]
     : [
         { rMult: 1.00, alpha: 1.0   },   // main fill
         { rMult: 0.88, alpha: 0.35  },   // inner ripple
         { rMult: 0.74, alpha: 0.18  },   // deeper ripple
       ];
 
-  // Blend fill colour
   const blend = Math.min(t * 2, 1);
   const rc = Math.round(fromColor[0] + (toColor[0] - fromColor[0]) * blend);
   const gc = Math.round(fromColor[1] + (toColor[1] - fromColor[1]) * blend);
@@ -1877,7 +1694,6 @@ function drawFrame(ts) {
       const angle = (i / pts) * Math.PI * 2;
       const tWave = t * (1 - rMult * 0.5); // inner layers lag slightly
 
-      // Fewer harmonics on mobile for better performance
       let wobble;
       if (mobile) {
         wobble = r0 * (
@@ -1886,7 +1702,6 @@ function drawFrame(ts) {
           0.04  * Math.pow(Math.max(0, Math.sin(angle * 4 + tWave * 6)), 3)
         );
       } else {
-        // Stack many harmonics for a truly organic, splashing edge
         wobble = r0 * (
           0.028 * Math.sin(angle * 2  + tWave * 9)   +
           0.022 * Math.sin(angle * 3  - tWave * 13)  +
@@ -1895,13 +1710,11 @@ function drawFrame(ts) {
           0.009 * Math.sin(angle * 11 + tWave * 5)   +
           0.006 * Math.sin(angle * 13 - tWave * 11)  +
           0.004 * Math.sin(angle * 17 + tWave * 19)  +
-          // Splash spikes: dramatic protrusions near the leading edge
           0.04  * Math.pow(Math.max(0, Math.sin(angle * 4 + tWave * 6)), 3) +
           0.03  * Math.pow(Math.max(0, Math.sin(angle * 6 - tWave * 8)), 3)
         );
       }
 
-      // Wobble amplitude fades to zero as wave covers screen (settles when full)
       const settle = Math.pow(1 - ease, 0.6);
       const r2 = Math.max(0, r0 + wobble * settle);
       const x = ox + r2 * Math.cos(angle);
@@ -1913,7 +1726,6 @@ function drawFrame(ts) {
     ctx.fill();
   });
 
-  // Foam ring: skip on mobile, reduce on desktop
   if (!mobile && t > 0.05 && t < 0.92) {
     const foamR = radius * 1.01;
     ctx.beginPath();
@@ -1950,9 +1762,6 @@ function drawFrame(ts) {
   });
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  PERCENTAGE COUNTER
-// ══════════════════════════════════════════════════════════════
 function animateCount(el, target) {
   const duration = 1100;
   let start = null;
@@ -1967,9 +1776,6 @@ function animateCount(el, target) {
   requestAnimationFrame(step);
 }
 
-// ══════════════════════════════════════════════════════════════
-//  SCROLL REVEAL
-// ══════════════════════════════════════════════════════════════
 (function () {
   document.querySelectorAll('.skill-fill').forEach(f => { f.style.width = '0%'; });
 
@@ -1979,7 +1785,6 @@ function animateCount(el, target) {
       const el = entry.target;
       el.classList.add('visible');
 
-      // Skill bar + counter
       const fill = el.querySelector('.skill-fill');
       if (fill) {
         const w = parseInt(fill.dataset.width, 10);
@@ -1998,9 +1803,7 @@ function animateCount(el, target) {
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  NAV ACTIVE STATE — highlight current section
-// ══════════════════════════════════════════════════════════════
+// navigation haylayt
 (function () {
   const sections = document.querySelectorAll('section[id], div[id="hero"]');
   const links    = document.querySelectorAll('.nav-links a');
@@ -2018,9 +1821,8 @@ function animateCount(el, target) {
   sections.forEach(s => io.observe(s));
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  MOBILE NAV — burger toggles the links dropdown
-// ══════════════════════════════════════════════════════════════
+
+//  mobile navigation borger tagol
 (function () {
   const burger = document.getElementById('navBurger');
   const links  = document.getElementById('navLinks');
@@ -2040,22 +1842,17 @@ function animateCount(el, target) {
     setOpen(!links.classList.contains('open'));
   });
 
-  // Close the menu after tapping a link
+  // iclose ang menu pag click ng link (basta yon)
   links.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => setOpen(false));
   });
 
-  // Close the menu if the viewport grows back to desktop size
+  // close menu function basta yon
   window.addEventListener('resize', () => {
     if (window.innerWidth > 640) setOpen(false);
   });
 })();
 
-// ══════════════════════════════════════════════════════════════
-//  PROJECT GALLERY — Prev / Next / dots / swipe / keyboard
-//  Works for any .project-gallery[data-gallery] on the page,
-//  including ones placed inside a clickable <a class="project-card">.
-// ══════════════════════════════════════════════════════════════
 (function () {
   document.querySelectorAll('.project-gallery[data-gallery]').forEach(gallery => {
     const track   = gallery.querySelector('.gallery-track');
@@ -2068,7 +1865,6 @@ function animateCount(el, target) {
     let index = 0;
 
     if (total <= 1) {
-      // Nothing to navigate — hide controls entirely
       if (prevBtn) prevBtn.style.display = 'none';
       if (nextBtn) nextBtn.style.display = 'none';
       if (dotsWrap) dotsWrap.style.display = 'none';
@@ -2076,7 +1872,7 @@ function animateCount(el, target) {
       return;
     }
 
-    // Build dots
+    // build ng polka DOTS
     if (dotsWrap) {
       dotsWrap.innerHTML = '';
       for (let i = 0; i < total; i++) {
@@ -2119,7 +1915,6 @@ function animateCount(el, target) {
       goTo(index + 1);
     });
 
-    // Keyboard arrows when gallery (or its card) has focus/hover
     gallery.setAttribute('tabindex', '0');
     gallery.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(index - 1); }
