@@ -265,7 +265,7 @@
     animation: fadeUp 0.7s ease 0.25s forwards;
     transition: color 0.4s ease;
   }
-  .hero-name .highlight {
+  .hero-name .highlight .char {
     background: linear-gradient(135deg, var(--accent2), var(--accent3));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -959,14 +959,14 @@
     <span class="status-dot"></span>
     Available for opportunities
   </div>
-  <h1 class="hero-name">Hi, I'm <span class="highlight">Your Name</span></h1>
-  <p class="hero-title">Roblox Developer → <span class="typed-accent">Future Web & App Developer</span><span class="blink">_</span></p>
+  <h1 class="hero-name">Hi, im <span class="highlight">John</span></h1>
+  <p class="hero-title">Roblox Developer to <span class="typed-accent">Future Web & Game Developer</span><span class="blink">_</span></p>
   <p class="hero-desc">
-    I started building in Roblox and I'm on my way to becoming a full-stack developer.
-    Passionate about creating experiences — whether in games or on the web.
+    I started building in roblox and im on my way to becoming a full stack developer.
+    Passionate about creating experiences whether in games or on the web.
   </p>
   <div class="hero-cta">
-    <a href="#projects" class="btn-primary">See my work</a>
+    <a href="#projects" class="btn-primary">All my works</a>
     <a href="#contact" class="btn-outline">Get in touch</a>
   </div>
 
@@ -985,16 +985,16 @@
   <div class="about-grid">
     <div class="about-text reveal reveal-delay-2">
       <p>
-        I'm a <strong>Roblox developer</strong> currently leveling up my skills toward
-        web and app development. I love building things from scratch and figuring out how
+        Im a <strong>Roblox developer</strong> currently leveling up my skills toward
+        web and game development. I love building things from scratch and figuring out how
         they work under the hood.
       </p>
       <p>
-        My journey started in Roblox Studio, scripting games with Lua — and that same
+        My journey started in roblox studio, scripting games with LUA and that same
         curiosity is now pushing me into <strong>HTML, CSS, JavaScript</strong>, and beyond.
       </p>
       <p>
-        I'm driven, self-taught, and always learning. My goal is to build real products
+        Im driven, self taught, and always learning. My goal is to build real products
         that people actually use and enjoy.
       </p>
     </div>
@@ -1008,12 +1008,12 @@
         <div class="stat-label">Curiosity level</div>
       </div>
       <div class="stat-box">
-        <div class="stat-num">Web</div>
-        <div class="stat-label">Next goal</div>
+        <div class="stat-num">My next goal</div>
+        <div class="stat-label">Game Developing</div>
       </div>
       <div class="stat-box">
-        <div class="stat-num">Now</div>
-        <div class="stat-label">Ready to grow</div>
+        <div class="stat-num">Ready to</div>
+        <div class="stat-label">Learn</div>
       </div>
     </div>
   </div>
@@ -1023,7 +1023,7 @@
 
 <!-- SKILLS -->
 <section id="skills">
-  <div class="section-label reveal">What I know</div>
+  <div class="section-label reveal">What i know</div>
   <h2 class="section-title reveal reveal-delay-1">Skills</h2>
   <div class="skills-grid">
 
@@ -1039,9 +1039,9 @@
       <div class="skill-name">Lua / Roblox</div>
       <div class="skill-meta">
         <span class="skill-level">Main skill</span>
-        <span class="skill-percent" data-target="80">0%</span>
+        <span class="skill-percent" data-target="78">0%</span>
       </div>
-      <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+      <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
     </div>
 
     <div class="skill-card reveal reveal-delay-2">
@@ -1429,61 +1429,92 @@
     let start = null;
 
     // Organic wave edge: the leading circle is distorted by multiple sin waves
-    function drawFrame(ts) {
-      if (!start) start = ts;
-      const t = Math.min((ts - start) / dur, 1);
+function drawFrame(ts) {
+  if (!start) start = ts;
+  const t = Math.min((ts - start) / dur, 1);
 
-      // Ease: expo out
-      const ease = 1 - Math.pow(1 - t, 4);
-      const radius = ease * maxR;
+  const ease = 1 - Math.pow(1 - t, 3);
+  const radius = ease * maxR;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw organic blob by sampling points around the circle with wave distortion
-      const pts = 180;
-      ctx.beginPath();
-      for (let i = 0; i <= pts; i++) {
-        const angle = (i / pts) * Math.PI * 2;
-        // Stack a few sin waves on the radius for an organic wobble
-        const wobble = radius * (
-          0.012 * Math.sin(angle * 3 + t * 8) +
-          0.008 * Math.sin(angle * 7 - t * 12) +
-          0.005 * Math.sin(angle * 11 + t * 5)
-        );
-        const r2 = Math.max(0, radius + wobble * (1 - ease)); // wobble fades out as it covers screen
-        const x = ox + r2 * Math.cos(angle);
-        const y = oy + r2 * Math.sin(angle);
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.closePath();
+  // Draw 3 layered blobs: main fill + 2 trailing ripple rings
+  const layers = [
+    { rMult: 1.00, alpha: 1.0   },   // main fill
+    { rMult: 0.88, alpha: 0.35  },   // inner ripple
+    { rMult: 0.74, alpha: 0.18  },   // deeper ripple
+  ];
 
-      // Fill colour transitions from fromColor → toColor mid-animation
-      const blend = Math.min(t * 2, 1);
-      const rc = Math.round(fromColor[0] + (toColor[0] - fromColor[0]) * blend);
-      const gc = Math.round(fromColor[1] + (toColor[1] - fromColor[1]) * blend);
-      const bc = Math.round(fromColor[2] + (toColor[2] - fromColor[2]) * blend);
-      ctx.fillStyle = `rgb(${rc},${gc},${bc})`;
-      ctx.fill();
+  // Blend fill colour
+  const blend = Math.min(t * 2, 1);
+  const rc = Math.round(fromColor[0] + (toColor[0] - fromColor[0]) * blend);
+  const gc = Math.round(fromColor[1] + (toColor[1] - fromColor[1]) * blend);
+  const bc = Math.round(fromColor[2] + (toColor[2] - fromColor[2]) * blend);
 
-      // Switch the actual theme right at the wave's midpoint
-      if (t >= 0.48 && !wrap.dataset.switched) {
-        wrap.dataset.switched = '1';
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
-      }
+  layers.forEach(({ rMult, alpha }) => {
+    const r0 = radius * rMult;
+    const pts = 260;
+    ctx.beginPath();
+    for (let i = 0; i <= pts; i++) {
+      const angle = (i / pts) * Math.PI * 2;
+      const tWave = t * (1 - rMult * 0.5); // inner layers lag slightly
 
-      if (t < 1) {
-        requestAnimationFrame(drawFrame);
-      } else {
-        // Final frame: ensure theme is set and fade out
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
-        wrap.style.transition = 'opacity 0.18s ease';
-        wrap.style.opacity = '0';
-        setTimeout(() => wrap.remove(), 200);
-      }
+      // Stack many harmonics for a truly organic, splashing edge
+      const wobble = r0 * (
+        0.028 * Math.sin(angle * 2  + tWave * 9)   +
+        0.022 * Math.sin(angle * 3  - tWave * 13)  +
+        0.018 * Math.sin(angle * 5  + tWave * 7)   +
+        0.012 * Math.sin(angle * 7  - tWave * 17)  +
+        0.009 * Math.sin(angle * 11 + tWave * 5)   +
+        0.006 * Math.sin(angle * 13 - tWave * 11)  +
+        0.004 * Math.sin(angle * 17 + tWave * 19)  +
+        // Splash spikes: dramatic protrusions near the leading edge
+        0.04  * Math.pow(Math.max(0, Math.sin(angle * 4 + tWave * 6)), 3) +
+        0.03  * Math.pow(Math.max(0, Math.sin(angle * 6 - tWave * 8)), 3)
+      );
+
+      // Wobble amplitude fades to zero as wave covers screen (settles when full)
+      const settle = Math.pow(1 - ease, 0.6);
+      const r2 = Math.max(0, r0 + wobble * settle);
+      const x = ox + r2 * Math.cos(angle);
+      const y = oy + r2 * Math.sin(angle);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     }
+    ctx.closePath();
+    ctx.fillStyle = `rgba(${rc},${gc},${bc},${alpha})`;
+    ctx.fill();
+  });
 
+  // Foam ring: a thin bright ring right at the leading edge
+  if (t > 0.05 && t < 0.92) {
+    const foamR = radius * 1.01;
+    ctx.beginPath();
+    ctx.arc(ox, oy, foamR, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(255,255,255,${0.18 * (1 - ease)})`;
+    ctx.lineWidth = 3 + (1 - ease) * 6;
+    ctx.stroke();
+  }
+
+  if (t >= 0.48 && !wrap.dataset.switched) {
+    wrap.dataset.switched = '1';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+  }
+
+  if (t < 1) {
+    requestAnimationFrame(drawFrame);
+  } else {
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+    wrap.style.transition = 'opacity 0.18s ease';
+    wrap.style.opacity = '0';
+    setTimeout(() => wrap.remove(), 200);
+  }
+}
+
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('portfolio-theme', next); } catch (e) {}
+    wrap.dataset.switched = '1';
     requestAnimationFrame(drawFrame);
   });
 })();
