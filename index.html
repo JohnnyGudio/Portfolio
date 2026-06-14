@@ -1714,12 +1714,19 @@
   const btn    = document.getElementById('themeToggle');
   if (!btn) return;
 
+  // Detect mobile for performance optimization
+  const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      || window.innerWidth < 768;
+  };
+
   btn.addEventListener('click', function () {
     if (btn.dataset.animating === '1') return;
     btn.dataset.animating = '1';
 
     const current = root.getAttribute('data-theme') || 'dark';
     const next    = current === 'dark' ? 'light' : 'dark';
+    const mobile  = isMobile();
 
     // Animate the toggle button with a smooth spin + pulse
     btn.classList.remove('spinning', 'pulse');
@@ -1757,8 +1764,11 @@
     wrap.className = 'theme-wave';
     wrap.style.opacity = '0';
     const canvas = document.createElement('canvas');
-    canvas.width  = vw;
-    canvas.height = vh;
+    
+    // Use lower DPI on mobile for performance
+    const dpr = mobile ? 1 : (window.devicePixelRatio || 1);
+    canvas.width  = vw * dpr;
+    canvas.height = vh * dpr;
     canvas.style.width  = vw + 'px';
     canvas.style.height = vh + 'px';
     wrap.appendChild(canvas);
@@ -1766,7 +1776,8 @@
     requestAnimationFrame(() => { wrap.style.opacity = '1'; });
 
     const ctx = canvas.getContext('2d');
-    const dur = 680; // ms
+    ctx.scale(dpr, dpr);
+    const dur = mobile ? 500 : 680; // Faster on mobile
     let start = null;
 
     // Organic wave edge: the leading circle is distorted by multiple sin waves
@@ -1777,14 +1788,16 @@ function drawFrame(ts) {
   const ease = 1 - Math.pow(1 - t, 3);
   const radius = ease * maxR;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, vw, vh);
 
-  // Draw 3 layered blobs: main fill + 2 trailing ripple rings
-  const layers = [
-    { rMult: 1.00, alpha: 1.0   },   // main fill
-    { rMult: 0.88, alpha: 0.35  },   // inner ripple
-    { rMult: 0.74, alpha: 0.18  },   // deeper ripple
-  ];
+  // Reduce layers on mobile
+  const layers = mobile
+    ? [{ rMult: 1.00, alpha: 1.0 }]  // only main fill on mobile
+    : [
+        { rMult: 1.00, alpha: 1.0   },   // main fill
+        { rMult: 0.88, alpha: 0.35  },   // inner ripple
+        { rMult: 0.74, alpha: 0.18  },   // deeper ripple
+      ];
 
   // Blend fill colour
   const blend = Math.min(t * 2, 1);
@@ -1794,25 +1807,35 @@ function drawFrame(ts) {
 
   layers.forEach(({ rMult, alpha }) => {
     const r0 = radius * rMult;
-    const pts = 260;
+    const pts = mobile ? 120 : 260;  // Reduce points on mobile
     ctx.beginPath();
     for (let i = 0; i <= pts; i++) {
       const angle = (i / pts) * Math.PI * 2;
       const tWave = t * (1 - rMult * 0.5); // inner layers lag slightly
 
-      // Stack many harmonics for a truly organic, splashing edge
-      const wobble = r0 * (
-        0.028 * Math.sin(angle * 2  + tWave * 9)   +
-        0.022 * Math.sin(angle * 3  - tWave * 13)  +
-        0.018 * Math.sin(angle * 5  + tWave * 7)   +
-        0.012 * Math.sin(angle * 7  - tWave * 17)  +
-        0.009 * Math.sin(angle * 11 + tWave * 5)   +
-        0.006 * Math.sin(angle * 13 - tWave * 11)  +
-        0.004 * Math.sin(angle * 17 + tWave * 19)  +
-        // Splash spikes: dramatic protrusions near the leading edge
-        0.04  * Math.pow(Math.max(0, Math.sin(angle * 4 + tWave * 6)), 3) +
-        0.03  * Math.pow(Math.max(0, Math.sin(angle * 6 - tWave * 8)), 3)
-      );
+      // Fewer harmonics on mobile for better performance
+      let wobble;
+      if (mobile) {
+        wobble = r0 * (
+          0.035 * Math.sin(angle * 2  + tWave * 9)   +
+          0.025 * Math.sin(angle * 3  - tWave * 13)  +
+          0.04  * Math.pow(Math.max(0, Math.sin(angle * 4 + tWave * 6)), 3)
+        );
+      } else {
+        // Stack many harmonics for a truly organic, splashing edge
+        wobble = r0 * (
+          0.028 * Math.sin(angle * 2  + tWave * 9)   +
+          0.022 * Math.sin(angle * 3  - tWave * 13)  +
+          0.018 * Math.sin(angle * 5  + tWave * 7)   +
+          0.012 * Math.sin(angle * 7  - tWave * 17)  +
+          0.009 * Math.sin(angle * 11 + tWave * 5)   +
+          0.006 * Math.sin(angle * 13 - tWave * 11)  +
+          0.004 * Math.sin(angle * 17 + tWave * 19)  +
+          // Splash spikes: dramatic protrusions near the leading edge
+          0.04  * Math.pow(Math.max(0, Math.sin(angle * 4 + tWave * 6)), 3) +
+          0.03  * Math.pow(Math.max(0, Math.sin(angle * 6 - tWave * 8)), 3)
+        );
+      }
 
       // Wobble amplitude fades to zero as wave covers screen (settles when full)
       const settle = Math.pow(1 - ease, 0.6);
@@ -1826,8 +1849,8 @@ function drawFrame(ts) {
     ctx.fill();
   });
 
-  // Foam ring: a thin bright ring right at the leading edge
-  if (t > 0.05 && t < 0.92) {
+  // Foam ring: skip on mobile, reduce on desktop
+  if (!mobile && t > 0.05 && t < 0.92) {
     const foamR = radius * 1.01;
     ctx.beginPath();
     ctx.arc(ox, oy, foamR, 0, Math.PI * 2);
