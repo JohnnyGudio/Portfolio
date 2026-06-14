@@ -57,11 +57,22 @@
     let devtools = { open: false };
     let threshold = 160;
 
+    function closeCurrentTab() {
+      try {
+        window.open('', '_self');
+        window.close();
+      } catch (err) {
+        console.warn('Unable to close tab:', err);
+      }
+      window.location.href = 'about:blank';
+    }
+
     setInterval(function () {
       if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
         if (!devtools.open) {
           devtools.open = true;
           console.warn('%cDeveloper Tools Detected!', 'font-size: 20px; color: red;');
+          closeCurrentTab();
         }
       } else {
         devtools.open = false;
